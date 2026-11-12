@@ -15,7 +15,7 @@ The Slack MCP Server connection is only available when using with Claude Code an
 
 ## Installing the plugin
 
-Read on for instructions on installing the Plugin for your AI tool of your choice, whether it be [Claude Code](#claude-code-install), [Codex](#codex-install), [Cursor](#cursor-install) or [other coding agents](#other-agents-install).
+Read on for instructions on installing the Plugin for your AI tool of your choice, whether it be [Claude Code](#claude-code-install), [Codex](#codex-install), [Cursor](#cursor-install), [Kiro Crew](#kiro-crew-install) or [other coding agents](#other-agents-install).
 
 ### Installing the plugin for Claude Code {#claude-code-install}
 
@@ -78,6 +78,31 @@ The plugin is published on the [official Cursor Marketplace](https://cursor.com/
 ```
 
 Alternatively, search for "slack" in the Cursor plugin marketplace. This installs the skills, and MCP server together, and prompts OAuth to your Slack workspace on first use.
+
+### Installing the plugin for Kiro Crew {#kiro-crew-install}
+
+[Kiro Crew](https://github.com/kirodotdev/KiroCrew) loads skills from `~/.kiro/crew/skills`. Copy the skills there:
+
+```sh
+git clone https://github.com/slackapi/slack-skills-plugin
+cp -R slack-skills-plugin/skills/* ~/.kiro/crew/skills/
+```
+
+Then add the Slack MCP server. In the Kiro Crew dashboard, open **Customize → Connections → MCP Servers** and add a remote server named `slack` with the URL `https://mcp.slack.com/mcp`.
+
+The Slack MCP server does not support dynamic client registration, so the server entry also needs Slack's pre-registered OAuth client. The dashboard form does not accept an `oauth` block, so add it to the `slack` entry in `~/.kiro/crew/mcp.json`:
+
+```json
+"slack": {
+  "url": "https://mcp.slack.com/mcp",
+  "oauth": {
+    "clientId": "1601185624273.8899143856786",
+    "redirectUri": "http://localhost:3118/callback"
+  }
+}
+```
+
+Restart Kiro Crew so the agent picks up the change, then start a new session. You'll be prompted to authenticate to your Slack workspace via OAuth on first use.
 
 ### Installing the skills for other agents {#other-agents-install}
 

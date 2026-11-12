@@ -80,6 +80,31 @@ Start a new Codex session to pick up the plugin, then invoke a skill by name wit
 
 Codex support currently ships the skills only; the MCP server is not yet wired into the Codex surface.
 
+### Kiro Crew
+
+[Kiro Crew][kiro-crew] loads skills from `~/.kiro/crew/skills`. Copy the skills there:
+
+```sh
+git clone https://github.com/slackapi/slack-skills-plugin
+cp -R slack-skills-plugin/skills/* ~/.kiro/crew/skills/
+```
+
+Then add the Slack MCP server. In the Kiro Crew dashboard, open **Customize → Connections → MCP Servers** and add a remote server named `slack` with the URL `https://mcp.slack.com/mcp`.
+
+Slack's MCP server does not support dynamic client registration, so the server entry also needs Slack's pre-registered OAuth client. The dashboard form does not accept an `oauth` block, so add it to the `slack` entry in `~/.kiro/crew/mcp.json`:
+
+```json
+"slack": {
+  "url": "https://mcp.slack.com/mcp",
+  "oauth": {
+    "clientId": "1601185624273.8899143856786",
+    "redirectUri": "http://localhost:3118/callback"
+  }
+}
+```
+
+Restart Kiro Crew so the agent picks up the change, then start a new session. You'll be prompted to authenticate to your Slack workspace via OAuth on first use.
+
 ### Other agents
 
 The skills install into other coding agents with [`npx skills`][npx-skills], no plugin marketplace required:
@@ -165,6 +190,7 @@ Working on the plugin itself? See the [maintainer's guide](.github/maintainers_g
 [claude-code]: https://claude.com/claude-code
 [cursor]: https://cursor.com
 [codex-cli]: https://developers.openai.com/codex/cli
+[kiro-crew]: https://github.com/kirodotdev/KiroCrew
 [slack-mcp-docs]: https://docs.slack.dev/ai/mcp-server/
 [npx-skills]: https://github.com/vercel-labs/skills#supported-agents
 [slack-cli]: https://tools.slack.dev/slack-cli
