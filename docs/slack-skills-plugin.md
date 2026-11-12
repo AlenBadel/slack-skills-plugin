@@ -88,19 +88,39 @@ git clone https://github.com/slackapi/slack-skills-plugin
 cp -R slack-skills-plugin/skills/* ~/.kiro/crew/skills/
 ```
 
-Then add the Slack MCP server. In the Kiro Crew dashboard, open **Customize → Connections → MCP Servers** and add a remote server named `slack` with the URL `https://mcp.slack.com/mcp`.
+Then add the Slack MCP server. In the Kiro Crew dashboard, open **Customize → Connections → MCP Servers** and add a remote server named `slack` with the URL `<SLACK_MCP_URL>`.
 
-The Slack MCP server does not support dynamic client registration, so the server entry also needs Slack's pre-registered OAuth client. The dashboard form does not accept an `oauth` block, so add it to the `slack` entry in `~/.kiro/crew/mcp.json`:
+The Slack MCP server does not support dynamic client registration, so the server entry also needs a pre-registered OAuth client. The dashboard form does not accept an `oauth` block, so add it to the `slack` entry in `~/.kiro/crew/mcp.json`:
 
 ```json
 "slack": {
-  "url": "https://mcp.slack.com/mcp",
+  "url": "<SLACK_MCP_URL>",
   "oauth": {
-    "clientId": "1601185624273.8899143856786",
-    "redirectUri": "http://localhost:3118/callback"
+    "clientId": "<SLACK_CLIENT_ID>",
+    "redirectUri": "http://localhost:<CALLBACK_PORT>/callback"
   }
 }
 ```
+
+Fill in the placeholders from the `slack` server in this repository's `.mcp.json`:
+
+| Placeholder | Value in `.mcp.json` |
+|-------------|----------------------|
+| `<SLACK_MCP_URL>` | `url` |
+| `<SLACK_CLIENT_ID>` | `oauth.clientId` |
+| `<CALLBACK_PORT>` | `oauth.callbackPort` |
+
+Kiro Crew only opens sign-in pages it trusts, and Slack's is not in its built-in list. Add it to `~/.kiro/crew/oauth_endpoints.json`. Kiro Crew agents cannot write this file, so edit it yourself:
+
+```json
+{
+  "additional_authorization_endpoints": [
+    { "host": "<SLACK_AUTHORIZE_HOST>", "path": "<SLACK_AUTHORIZE_PATH>" }
+  ]
+}
+```
+
+`<SLACK_AUTHORIZE_HOST>` and `<SLACK_AUTHORIZE_PATH>` are the host and path of `authorization_endpoint` in the server's `/.well-known/oauth-authorization-server` metadata.
 
 Restart Kiro Crew so the agent picks up the change, then start a new session. You'll be prompted to authenticate to your Slack workspace via OAuth on first use.
 
