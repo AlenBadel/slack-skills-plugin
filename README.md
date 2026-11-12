@@ -96,6 +96,7 @@ The Slack MCP server does not support dynamic client registration, so the server
 ```json
 "slack": {
   "url": "<SLACK_MCP_URL>",
+  "scopes": ["<SCOPE_1>", "<SCOPE_2>"],
   "oauth": {
     "clientId": "<SLACK_CLIENT_ID>",
     "redirectUri": "http://localhost:<CALLBACK_PORT>/callback"
@@ -110,6 +111,8 @@ Fill in the placeholders from the `slack` server in this repository's `.mcp.json
 | `<SLACK_MCP_URL>` | `url` |
 | `<SLACK_CLIENT_ID>` | `oauth.clientId` |
 | `<CALLBACK_PORT>` | `oauth.callbackPort` |
+
+Slack refuses a sign-in that requests no scopes. Set `scopes` to the scopes you want, taken from `scopes_supported` in the server's `/.well-known/oauth-protected-resource` metadata.
 
 Kiro Crew only opens sign-in pages it trusts, and Slack's is not in its built-in list. Add it to `~/.kiro/crew/oauth_endpoints.json`. Kiro Crew agents cannot write this file, so edit it yourself:
 
